@@ -3,19 +3,42 @@ package com.nazar.cookbooknazar.models;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@Data
-@AllArgsConstructor
+
 public class Ingredient  {
     private String ingName;
-    private String measureUnit;
     private int weight;
-    private final int id;
-    private static int idGenerator = 0;
-    public Ingredient(String ingName, String measureUnit, int weight) {
-        this.ingName = ingName;
-        this.measureUnit = measureUnit;
-        this.weight = weight;
-        id = idGenerator++;
+    private String measureUnit;
+
+    public Ingredient() {
     }
 
+    public Ingredient(String ingName, int weight, String measureUnit) {
+        this.ingName = ingName;
+        this.weight = weight;
+        this.measureUnit = measureUnit;
+    }
+
+    public String getIngName() {
+        return ingName;
+    }
+
+    public void setIngName(String ingName) {
+        this.ingName = ingName;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public String getMeasureUnit() {
+        return measureUnit;
+    }
+
+    public void setMeasureUnit(String measureUnit) {
+        this.measureUnit = measureUnit;
+    }
 }

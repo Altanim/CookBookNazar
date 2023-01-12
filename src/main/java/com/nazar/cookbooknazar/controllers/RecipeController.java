@@ -7,25 +7,38 @@ import com.nazar.cookbooknazar.services.RecipeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/recipes")
 public class RecipeController {
-    private final RecipeService recipeService;
+   private final RecipeService recipeService;
 
     public RecipeController(RecipeService recipeService) {
         this.recipeService = recipeService;
     }
-    @GetMapping("/{recipeId}")
-    public ResponseEntity getRecipe(@PathVariable Long recipeId) {
-            Recipe recipe = recipeService.getRecipe(recipeId);
-            if(recipe == null) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok(recipe);
-        }
-        @PostMapping("/add")
-        public ResponseEntity addRecipe(@RequestBody Recipe recipe) {
+    @PostMapping("/add")
+        public Recipe addRecipe(@RequestBody Recipe recipe) {
             Recipe addedRecipe = recipeService.addRecipe(recipe);
-            return ResponseEntity.ok(addedRecipe);
+            return recipeService.addRecipe(recipe);
         }
+    @GetMapping("/{id}")
+    public ResponseEntity<Recipe> getRecipe(@PathVariable Long id) {
+        return ResponseEntity.of(recipeService.getRecipe(id));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Recipe> edit(@PathVariable long id,
+                                           @RequestBody Recipe recipe){
+        return ResponseEntity.of(recipeService.edit(id, recipe));
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Recipe> delete(@PathVariable long id){
+        return ResponseEntity.of(recipeService.delete(id));
+    }
+    @GetMapping
+    public Map<Long, Recipe> getAll(){
+        return recipeService.getAll();
+
+    }
 }

@@ -6,21 +6,32 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class RecipeServiceImpl implements RecipeService {
-    private static Long recipeId = 0L;
     public Map<Long,Recipe> RECIPES_MAP = new HashMap<>();
+    private long idGenerator = 1;
     @Override
-    public Recipe addRecipe(Recipe recipe) {
-        RECIPES_MAP.put(recipeId,recipe);
-        recipeId++;
+    public Recipe addRecipe(Recipe recipe){
+        RECIPES_MAP.put(idGenerator++, recipe);
         return recipe;
     }
-
     @Override
-    public Recipe getRecipe(Long recipeId) {
-        return RECIPES_MAP.get(recipeId);
+    public Optional<Recipe> getRecipe(Long id) {
+        return Optional.ofNullable(RECIPES_MAP.get(id));
+    }
+    @Override
+    public Optional<Recipe> edit(long id, Recipe recipe){
+        return Optional.ofNullable(RECIPES_MAP.replace(id,recipe));
+    }
+    @Override
+    public Optional<Recipe> delete(long id){
+        return Optional.ofNullable(RECIPES_MAP.remove(id));
+    }
+    @Override
+    public Map<Long,Recipe> getAll(){
+        return new HashMap<>(RECIPES_MAP);
     }
     }
 
