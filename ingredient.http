@@ -1,4 +1,4 @@
-POST http://localhost:8080/ingredients/add
+POST http://localhost:8080/ingredient
 Content-Type: application/json
 
 {
@@ -7,13 +7,13 @@ Content-Type: application/json
   "measureUnit": "гр."
 }
 ###
-GET http://localhost:8080/ingredients
+GET http://localhost:8080/ingredient
 
 ###
-GET http://localhost:8080/ingredients/1
+GET http://localhost:8080/ingredient/1
 
 ###
-PUT http://localhost:8080/ingredients/1
+PUT http://localhost:8080/ingredient/1
 Content-Type: application/json
 
 {
@@ -23,4 +23,4 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:8080/ingredients/1
+DELETE http://localhost:8080/ingredient/1

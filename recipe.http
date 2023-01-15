@@ -1,4 +1,4 @@
-POST http://localhost:8080/recipes/add
+POST http://localhost:8080/recipes
 Content-Type: application/json
 
 {

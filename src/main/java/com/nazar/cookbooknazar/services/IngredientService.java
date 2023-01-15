@@ -3,16 +3,31 @@ package com.nazar.cookbooknazar.services;
 import com.nazar.cookbooknazar.models.Ingredient;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
 @Service
-public interface IngredientService {
-    Optional<Ingredient> getIngredient(Long ingId);
-    Ingredient addIngredient(Ingredient ingredient);
+public class IngredientService {
+    private final Map<Long, Ingredient> INGREDIENTS_MAP = new HashMap<>();
+    private long idGenerator = 1L;
+    public Ingredient addIngredient(Ingredient ingredient){
+        INGREDIENTS_MAP.put(idGenerator++, ingredient);
+        return ingredient;
+    }
+    public Optional<Ingredient> getIngredient(long id){
+        return Optional.ofNullable(INGREDIENTS_MAP.get(id));
+    }
 
-    Optional<Ingredient> edit(long id, Ingredient ingredient);
+    public Optional<Ingredient> update(long id, Ingredient ingredient) {
+        return Optional.ofNullable(INGREDIENTS_MAP.replace(id,ingredient));
+    }
 
-    Optional<Ingredient> delete(long id);
+    public Optional<Ingredient> delete(long id) {
+        return Optional.ofNullable(INGREDIENTS_MAP.remove(id));
+    }
 
-    Map<Long,Ingredient> getAll();
+    public Map<Long,Ingredient> getAll() {
+        return new HashMap<>(INGREDIENTS_MAP);
+    }
 }
