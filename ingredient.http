@@ -2,7 +2,7 @@ POST http://localhost:8080/ingredient
 Content-Type: application/json
 
 {
-  "ingName": "Творог",
+  "ingName": "Творогj",
   "weight": 350,
   "measureUnit": "гр."
 }
