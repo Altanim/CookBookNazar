@@ -1,0 +1,26 @@
+POST http://localhost:8080/ingredient
+Content-Type: application/json
+
+{
+  "ingName": "Творогj",
+  "weight": 350,
+  "measureUnit": "гр."
+}
+###
+GET http://localhost:8080/ingredient
+
+###
+GET http://localhost:8080/ingredient/1
+
+###
+PUT http://localhost:8080/ingredient/1
+Content-Type: application/json
+
+{
+  "ingName": "Творожная масса",
+  "weight": 250,
+  "measureUnit": "гр"
+}
+
+###
+DELETE http://localhost:8080/ingredient/1
