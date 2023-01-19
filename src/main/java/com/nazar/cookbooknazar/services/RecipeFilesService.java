@@ -45,9 +45,11 @@ public class RecipeFilesService {
             throw new RuntimeException(e);
         }
     }
-    public File getDataFile(){
+
+    public File getDataFile() {
         return new File(dataFilePath + "/" + dataFileName);
     }
+
     public boolean cleanDataFileRecipe() {
         try {
             Files.deleteIfExists(Path.of(dataFilePath, dataFileName));
@@ -58,6 +60,7 @@ public class RecipeFilesService {
             throw new RuntimeException(e);
         }
     }
+
     public Path CreateTempFile(String suffix) {
         try {
             return Files.createTempFile(Path.of(dataFilePath), "tempfile", suffix);

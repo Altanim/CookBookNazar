@@ -25,6 +25,7 @@ public class IngredientFilesController {
     public IngredientFilesController(IngredientFilesService ingredientFilesService) {
         this.ingredientFilesService = ingredientFilesService;
     }
+
     @Operation(summary = "Скачивание ингредиентов", description = "Скачивание ингредиентов")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Скачивание успешно"),
@@ -32,18 +33,19 @@ public class IngredientFilesController {
     })
     @GetMapping("/export")
     public ResponseEntity<InputStreamResource> downloadDataFile() throws FileNotFoundException {
-       File ingFile = ingredientFilesService.getDataFile();
-       if (ingFile.exists()){
-           InputStreamResource resource = new InputStreamResource(new FileInputStream(ingFile));
-           return ResponseEntity.ok()
-                   .contentType(MediaType.APPLICATION_JSON)
-                   .contentLength(ingFile.length())
-                   .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\"ingredients.json\"")
-                   .body(resource);
-       } else {
-           return ResponseEntity.noContent().build();
-       }
+        File ingFile = ingredientFilesService.getDataFile();
+        if (ingFile.exists()) {
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(ingFile));
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentLength(ingFile.length())
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"ingredients.json\"")
+                    .body(resource);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
+
     @Operation(summary = "Импорт", description = "Импорт рецептов")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Успешно"),
@@ -53,10 +55,10 @@ public class IngredientFilesController {
     public ResponseEntity<Void> uploadDataFile(@RequestParam MultipartFile ingFile) {
         ingredientFilesService.cleanDataFileIngredient();
         File ingFile1 = ingredientFilesService.getDataFile();
-        try (FileOutputStream fileOutputStream = new FileOutputStream(ingFile1)){
+        try (FileOutputStream fileOutputStream = new FileOutputStream(ingFile1)) {
             IOUtils.copy(ingFile.getInputStream(), fileOutputStream);
-            return   ResponseEntity.ok().build();
-        }    catch (IOException e) {
+            return ResponseEntity.ok().build();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

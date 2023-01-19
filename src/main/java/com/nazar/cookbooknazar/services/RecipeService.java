@@ -26,29 +26,35 @@ public class RecipeService {
     public RecipeService(RecipeFilesService recipeFilesService) {
         this.recipeFilesService = recipeFilesService;
     }
+
     @PostConstruct
     private void init() {
 
     }
+
     @Nullable
     public Recipe addRecipe(Recipe recipe) {
         RECIPES_MAP.put(id++, recipe);
         saveToFile();
         return recipe;
     }
+
     @Nullable
     public Optional<Recipe> getRecipe(long id) {
         return Optional.ofNullable(RECIPES_MAP.get(id));
     }
+
     @Nullable
     public Optional<Recipe> update(long id, Recipe recipe) {
         saveToFile();
         return Optional.ofNullable(RECIPES_MAP.replace(id, recipe));
     }
+
     @Nullable
     public Optional<Recipe> delete(long id) {
         return Optional.ofNullable(RECIPES_MAP.remove(id));
     }
+
     @Nullable
     public Map<Long, Recipe> getAll() {
         return new HashMap<>(RECIPES_MAP);
@@ -86,15 +92,14 @@ public class RecipeService {
         }
         return path;
     }
+
     public Path CreateRecipeTextFileAll() throws IOException {
         Path path = recipeFilesService.CreateTempFile("RecipeFiles");
-        try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)){
+        try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
             writer.append(RECIPES_MAP.toString());
         }
         return path;
     }
-
-
 
 
 }

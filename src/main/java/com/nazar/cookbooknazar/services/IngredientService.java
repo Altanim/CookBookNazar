@@ -49,10 +49,12 @@ public class IngredientService {
     public Optional<Ingredient> update(long id, Ingredient ingredient) {
         return Optional.ofNullable(INGREDIENTS_MAP.replace(id, ingredient));
     }
+
     @Nullable
     public Optional<Ingredient> delete(long id) {
         return Optional.ofNullable(INGREDIENTS_MAP.remove(id));
     }
+
     @Nullable
     public Map<Long, Ingredient> getAll() {
         return new HashMap<>(INGREDIENTS_MAP);
@@ -77,6 +79,7 @@ public class IngredientService {
         }
 
     }
+
     public Path CreateIngredientTextFile(Long id) throws IOException {
         Path path = ingredientFilesService.CreateTempFile("IngredientFile");
         try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
@@ -87,9 +90,10 @@ public class IngredientService {
         }
         return path;
     }
+
     public Path CreateIngredientTextFileAll() throws IOException {
         Path path = ingredientFilesService.CreateTempFile("IngredientFiles");
-        try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)){
+        try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
             writer.append(INGREDIENTS_MAP.toString());
         }
         return path;

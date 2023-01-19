@@ -87,11 +87,12 @@ public class IngredientController {
     public Map<Long, Ingredient> getAll() {
         return ingredientService.getAll();
     }
+
     @GetMapping("/download/{id}")
     @Operation(summary = "Получение ингредиента по id", description = "Получение ингредиента")
     @ApiResponse(responseCode = "200",
             description = "Успешно")
-    public  ResponseEntity downloadIngredientById(@PathVariable Long id) {
+    public ResponseEntity downloadIngredientById(@PathVariable Long id) {
         try {
             Path path = ingredientService.CreateIngredientTextFile(id);
             InputStreamResource inputStream = new InputStreamResource(new FileInputStream(path.toFile()));
@@ -105,11 +106,12 @@ public class IngredientController {
             throw new RuntimeException();
         }
     }
+
     @GetMapping("/download/all")
     @Operation(summary = "Получение всех ингредиентов", description = "Получение всех ингредиентов")
     @ApiResponse(responseCode = "200",
             description = "Успешно")
-    public  ResponseEntity downloadAllIngredients() {
+    public ResponseEntity downloadAllIngredients() {
         try {
             Path path = ingredientService.CreateIngredientTextFileAll();
             InputStreamResource inputStream = new InputStreamResource(new FileInputStream(path.toFile()));

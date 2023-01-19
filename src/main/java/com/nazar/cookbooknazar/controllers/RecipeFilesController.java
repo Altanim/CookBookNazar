@@ -25,6 +25,7 @@ public class RecipeFilesController {
     public RecipeFilesController(RecipeFilesService recipeFilesService) {
         this.recipeFilesService = recipeFilesService;
     }
+
     @Operation(summary = "Скачивание рецептов бесплатно без регистрации", description = "Скачивание рецептов")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Скачивание успешно"),
@@ -33,17 +34,18 @@ public class RecipeFilesController {
     @GetMapping("/export")
     public ResponseEntity<InputStreamResource> downloadDataFile() throws FileNotFoundException {
         File recFile = recipeFilesService.getDataFile();
-        if (recFile.exists()){
+        if (recFile.exists()) {
             InputStreamResource resource = new InputStreamResource(new FileInputStream(recFile));
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_JSON)
                     .contentLength(recFile.length())
-                    .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\"recipes.json\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"recipes.json\"")
                     .body(resource);
         } else {
             return ResponseEntity.noContent().build();
         }
     }
+
     @Operation(summary = "Импорт рецептов", description = "Импорт рецептов")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Успешно"),
@@ -53,10 +55,10 @@ public class RecipeFilesController {
     public ResponseEntity<Void> uploadDataFile(@RequestParam MultipartFile recFile) {
         recipeFilesService.cleanDataFileRecipe();
         File recFile1 = recipeFilesService.getDataFile();
-        try (FileOutputStream fileOutputStream = new FileOutputStream(recFile1)){
+        try (FileOutputStream fileOutputStream = new FileOutputStream(recFile1)) {
             IOUtils.copy(recFile.getInputStream(), fileOutputStream);
-            return   ResponseEntity.ok().build();
-        }    catch (IOException e) {
+            return ResponseEntity.ok().build();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

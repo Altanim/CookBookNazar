@@ -8,17 +8,18 @@ import org.springframework.util.CollectionUtils;
 
 @Service
 public class ValidateService {
-    public boolean isNotValid(Recipe recipe){
+    public boolean isNotValid(Recipe recipe) {
         return StringUtils.isBlank(recipe.getRecipeName()) &&
                 !CollectionUtils.isEmpty(recipe.getIngredients()) &&
                 !CollectionUtils.isEmpty(recipe.getSteps()) &&
                 recipe.getCookingTimeMinutes() > 0;
     }
-    public boolean isNotValid(Ingredient ingredient){
+
+    public boolean isNotValid(Ingredient ingredient) {
         return StringUtils.isBlank(ingredient.getIngName()) &&
                 StringUtils.isBlank(ingredient.getMeasureUnit()) &&
                 ingredient.getWeight() > 0;
     }
-    }
+}
 
 
