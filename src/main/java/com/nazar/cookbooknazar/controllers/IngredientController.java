@@ -7,14 +7,21 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Objects;
 
 @RestController
-@Tag(name = "Ингредиенты", description = "всё, что относится к ингредиентам")
+@Tag(name = "Ингредиенты", description = "ингредиенты")
 @RequestMapping("/ingredient")
 public class IngredientController {
     private final IngredientService ingredientService;
@@ -32,7 +39,7 @@ public class IngredientController {
     })
     @PostMapping
     public ResponseEntity<Ingredient> add(@RequestBody Ingredient ingredient) {
-        if (!validateService.isNotValid(ingredient)) {
+        if (validateService.isNotValid(ingredient)) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(ingredientService.addIngredient(ingredient));
@@ -45,7 +52,7 @@ public class IngredientController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<Ingredient> get(@PathVariable long id) {
-        return ResponseEntity.of(Objects.requireNonNull(ingredientService.getIngredient(id)));
+        return ResponseEntity.of(ingredientService.getIngredient(id));
     }
 
     @Operation(summary = "Изменение ингредиента", description = "Изменение ингредиента")
@@ -55,10 +62,10 @@ public class IngredientController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<Ingredient> update(@PathVariable long id, @RequestBody Ingredient ingredient) {
-        if (!validateService.isNotValid(ingredient)) {
+        if (validateService.isNotValid(ingredient)) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.of(Objects.requireNonNull(ingredientService.update(id, ingredient)));
+        return ResponseEntity.of(ingredientService.update(id, ingredient));
     }
 
     @Operation(summary = "Удаление ингредиента", description = "Удаление ингредиента")
@@ -68,7 +75,7 @@ public class IngredientController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Ingredient> delete(@PathVariable long id) {
-        return ResponseEntity.of(Objects.requireNonNull(ingredientService.delete(id)));
+        return ResponseEntity.of(ingredientService.delete(id));
     }
 
     @Operation(summary = "Получение списка ингредиентов", description = "Получение списка ингредиентов")
@@ -79,5 +86,41 @@ public class IngredientController {
     @GetMapping
     public Map<Long, Ingredient> getAll() {
         return ingredientService.getAll();
+    }
+    @GetMapping("/download/{id}")
+    @Operation(summary = "Получение ингредиента по id", description = "Получение ингредиента")
+    @ApiResponse(responseCode = "200",
+            description = "Успешно")
+    public  ResponseEntity downloadIngredientById(@PathVariable Long id) {
+        try {
+            Path path = ingredientService.CreateIngredientTextFile(id);
+            InputStreamResource inputStream = new InputStreamResource(new FileInputStream(path.toFile()));
+            return ResponseEntity.ok()
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"Recipe.doc\"")
+                    .contentLength(Files.size(path))
+                    .body(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
+    @GetMapping("/download/all")
+    @Operation(summary = "Получение всех ингредиентов", description = "Получение всех ингредиентов")
+    @ApiResponse(responseCode = "200",
+            description = "Успешно")
+    public  ResponseEntity downloadAllIngredients() {
+        try {
+            Path path = ingredientService.CreateIngredientTextFileAll();
+            InputStreamResource inputStream = new InputStreamResource(new FileInputStream(path.toFile()));
+            return ResponseEntity.ok()
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"AllIngredients.doc\"")
+                    .contentLength(Files.size(path))
+                    .body(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
     }
 }

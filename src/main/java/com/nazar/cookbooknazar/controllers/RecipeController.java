@@ -7,13 +7,20 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 
 @RestController
-@Tag(name = "Рецепты", description = "всё, что относится к рецептам")
+@Tag(name = "Рецепты", description = "рецепты")
 @RequestMapping("/recipe")
 public class RecipeController {
     private final RecipeService recipeService;
@@ -31,7 +38,7 @@ public class RecipeController {
     })
     @PostMapping
     public ResponseEntity<Recipe> add(@RequestBody Recipe recipe) {
-        if (!validateService.isNotValid(recipe)) {
+        if (validateService.isNotValid(recipe)) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(recipeService.addRecipe(recipe));
@@ -54,7 +61,7 @@ public class RecipeController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<Recipe> update(@PathVariable long id, @RequestBody Recipe recipe) {
-        if (!validateService.isNotValid(recipe)) {
+        if (validateService.isNotValid(recipe)) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.of(recipeService.update(id, recipe));
@@ -78,6 +85,42 @@ public class RecipeController {
     @GetMapping
     public Map<Long, Recipe> getAll() {
         return recipeService.getAll();
+    }
+    @GetMapping("/download/{id}")
+    @Operation(summary = "Получение рецепта по id", description = "Получение рецепта")
+    @ApiResponse(responseCode = "200",
+            description = "Успешно")
+    public  ResponseEntity downloadRecipeById(@PathVariable Long id) {
+        try {
+            Path path = recipeService.CreateRecipeTextFile(id);
+            InputStreamResource inputStream = new InputStreamResource(new FileInputStream(path.toFile()));
+            return ResponseEntity.ok()
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"Recipe.doc\"")
+                    .contentLength(Files.size(path))
+                    .body(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
+    @GetMapping("/download/all")
+    @Operation(summary = "Получение всех рецептов", description = "Получение всех рецептов")
+    @ApiResponse(responseCode = "200",
+            description = "Successfully")
+    public  ResponseEntity downloadAllRecipes() {
+        try {
+            Path path = recipeService.CreateRecipeTextFileAll();
+            InputStreamResource inputStream = new InputStreamResource(new FileInputStream(path.toFile()));
+            return ResponseEntity.ok()
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"AllRecipes.doc\"")
+                    .contentLength(Files.size(path))
+                    .body(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
     }
 }
 
